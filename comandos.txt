@@ -1,0 +1,3 @@
+flutter create nome do app
+cd nome do projeto 
+flutter run opções
