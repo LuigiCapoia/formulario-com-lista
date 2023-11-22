@@ -1,0 +1,167 @@
+prova pratica valendo 4
+prova escrita valendo 4 (4 de x e 4 abertas)
+
+dia 24/11
+criar tela com listagens dos itens, vai ficar em memoria, nao precisa persistir
+fazer botao, retorna pra lista e adiciona na lista
+
+abrir terminal como admin
+
+/////////////////////////////////////////////////////////////////////////////////////
+
+projeto Completo -- https://drive.google.com/file/d/12rbpnW6rcYZ_WPGlvCNTgrF7U-Rj8Ovo/view?usp=sharing
+
+//////////////////////////////////////////////////////////////////////////////////////
+##app.dart
+
+import 'package:flutter/material.dart' ;
+import 'package:testeee/view/form_autor.dart';
+//import 'package:testeee/view/list_autor.dart';
+
+class App extends StatelessWidget {
+
+ const App({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: const FormAutor(),
+      theme: ThemeData.from(
+      colorScheme: ColorScheme.fromSwatch(
+        backgroundColor: Colors.white,
+        primarySwatch: Colors.red,
+        accentColor:  Colors.black,
+      ),
+      ),
+      );
+  }
+}
+
+///////////////////////////////////////////////////////////////////////////
+##main.dart
+
+import 'package:flutter/material.dart';
+import 'package:testeee/view/app.dart';
+
+void main() {
+  runApp( const App());
+}
+
+////////////////////////////////////////////////////////////////////////////////
+##autor.dart
+
+class Autor {
+  String nome;
+  int anoNascimento;
+
+  Autor({required this.nome, required this.anoNascimento});
+}
+
+///////////////////////////////////////////////////////////////////////////////////
+##list_autor.dart
+
+import 'package:flutter/material.dart';
+import 'autor.dart'; // Importe o arquivo que contém a classe Autor
+
+class ListAutor extends StatelessWidget {
+  final List<Autor> listaAutores;
+
+  const ListAutor({Key? key, required this.listaAutores}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Autores'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: listaAutores.map((autor) {
+            return ListTile(
+              title: Text('Nome: ${autor.nome} - Ano: ${autor.anoNascimento}'),
+            );
+          }).toList(),
+        ),
+      ),
+    );
+  }
+}
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+## form_autor.dart
+
+import 'package:flutter/material.dart';
+import 'package:testeee/components/my_inputs.dart';
+import 'autor.dart'; 
+import 'list_autor.dart';
+
+class FormAutor extends StatefulWidget {
+  const FormAutor({Key? key}) : super(key: key);
+
+  @override
+  State<FormAutor> createState() => _FormAutorState();
+}
+
+class _FormAutorState extends State<FormAutor> {
+  final TextEditingController ctrlNome = TextEditingController();
+  final TextEditingController ctrlAno = TextEditingController();
+  List<Autor> listaAutores = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Formulário'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            MyInputs(
+              controller: ctrlNome,
+              label: 'Nome',
+              hint: 'Informe o nome do autor',
+            ),
+            MyInputs(
+              controller: ctrlAno,
+              label: 'Ano',
+              hint: 'Informe o ano de nascimento do autor',
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly, // ou MainAxisAlignment.spaceAround
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      listaAutores.add(Autor(
+                        nome: ctrlNome.text,
+                        anoNascimento: int.parse(ctrlAno.text),
+                      ));
+                      ctrlNome.clear();
+                      ctrlAno.clear();
+                    });
+                  },
+                  child: Text('Adicionar Autor'),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Navegar para a página de lista de autores, passando a lista
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ListAutor(listaAutores: listaAutores),
+                      ),
+                    );
+                  },
+                  child: Text('Ver Lista de Autores'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+//////////////////////////////////////////////////////////////////////////////////
